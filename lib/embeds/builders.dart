@@ -248,8 +248,12 @@ class FormulaEmbedBuilder extends EmbedBuilder {
       child: MathField(
         controller: mathController,
         variables: const ['x', 'y', 'z'],
-        onChanged: (value) {},
-        onSubmitted: (value) {},
+        onChanged: (value) {
+          controller.document.insert(controller.document.length - 1, value);
+        },
+        onSubmitted: (value) {
+          controller.document.insert(controller.document.length - 1, value);
+        },
       ),
     );
   }

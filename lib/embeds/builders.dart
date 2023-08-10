@@ -249,6 +249,7 @@ class FormulaEmbedBuilder extends EmbedBuilder {
         controller: mathController,
         variables: const ['x', 'y', 'z'],
         onChanged: (value) {
+          debugPrint('TYPING VALUE IS $value');
           controller.document.insert(controller.document.length - 1, value);
         },
         onSubmitted: (value) {

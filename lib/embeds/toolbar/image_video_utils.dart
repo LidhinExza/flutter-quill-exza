@@ -87,15 +87,21 @@ class ImageVideoUtils {
         context: context,
         builder: (ctx) => AlertDialog(
           contentPadding: EdgeInsets.zero,
-          content: Column(
+          content: Row(
             mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               TextButton.icon(
                 icon: const Icon(
                   Icons.gavel_outlined,
                   color: Colors.blue,
                 ),
-                label: Text('Gallery'.i18n),
+                label: Text(
+                  'Gallery'.i18n,
+                  style: const TextStyle(
+                    color: Colors.black,
+                  ),
+                ),
                 onPressed: () => Navigator.pop(ctx, MediaPickSetting.Gallery),
               ),
               TextButton.icon(
@@ -103,7 +109,12 @@ class ImageVideoUtils {
                   Icons.link,
                   color: Colors.cyanAccent,
                 ),
-                label: Text('Link'.i18n),
+                label: Text(
+                  'Link'.i18n,
+                  style: const TextStyle(
+                    color: Colors.black,
+                  ),
+                ),
                 onPressed: () => Navigator.pop(ctx, MediaPickSetting.Link),
               )
             ],

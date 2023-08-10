@@ -93,7 +93,7 @@ class ImageVideoUtils {
               TextButton.icon(
                 icon: const Icon(
                   Icons.collections,
-                  color: Colors.orangeAccent,
+                  color: Colors.blue,
                 ),
                 label: Text('Gallery'.i18n),
                 onPressed: () => Navigator.pop(ctx, MediaPickSetting.Gallery),

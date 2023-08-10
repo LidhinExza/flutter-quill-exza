@@ -93,7 +93,7 @@ class ImageVideoUtils {
             children: [
               TextButton.icon(
                 icon: const Icon(
-                  Icons.gavel_outlined,
+                  Icons.collections,
                   color: Colors.blue,
                 ),
                 label: Text(

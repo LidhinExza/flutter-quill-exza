@@ -248,13 +248,16 @@ class FormulaEmbedBuilder extends EmbedBuilder {
       child: MathField(
         controller: mathController,
         variables: const ['x', 'y', 'z'],
+        decoration: InputDecoration(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
         onChanged: (value) {
-          debugPrint('TYPING VALUE IS $value');
-          controller.document.insert(controller.document.length - 1, value);
+          debugPrint('TYPING VALUE IS');
+          debugPrint('TYPING VALUE IS Y $value');
         },
-        onSubmitted: (value) {
-          controller.document.insert(controller.document.length - 1, value);
-        },
+        onSubmitted: (value) {},
       ),
     );
   }

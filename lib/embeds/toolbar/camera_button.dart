@@ -88,7 +88,7 @@ class CameraButton extends StatelessWidget {
                       TextButton.icon(
                         icon: const Icon(
                           Icons.camera,
-                          color: Colors.orangeAccent,
+                          color: Colors.blue,
                         ),
                         label: Text('Camera'.i18n),
                         onPressed: () =>

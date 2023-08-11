@@ -17,8 +17,6 @@ import 'widgets/image_resizer.dart';
 import 'widgets/video_app.dart';
 import 'widgets/youtube_video_app.dart';
 
-final mathController = MathFieldEditingController();
-
 class ImageEmbedBuilder extends EmbedBuilder {
   @override
   String get key => BlockEmbed.imageType;
@@ -237,18 +235,17 @@ class FormulaEmbedBuilder extends EmbedBuilder {
     TextStyle textStyle,
   ) {
     assert(!kIsWeb, 'Please provide formula EmbedBuilder for Web');
-
+    final mathController = MathFieldEditingController();
     return Focus(
       onFocusChange: (hasFocus) {
+        debugPrint('HAS FOCUS $hasFocus');
         if (hasFocus) {
-          controller.skipRequestKeyboard;
           SystemChannels.textInput.invokeMethod('TextInput.hide');
         } else {
           SystemChannels.textInput.invokeMethod('TextInput.show');
         }
       },
       child: MathField(
-        controller: mathController,
         variables: const ['x', 'y', 'z'],
         decoration: InputDecoration(
             suffix: MouseRegion(

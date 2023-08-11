@@ -80,7 +80,7 @@ class FlutterQuillEmbeds {
                 iconTheme: iconTheme,
                 dialogTheme: dialogTheme,
                 linkRegExp: videoLinkRegExp,
-          ),
+              ),
         if ((onImagePickCallback != null || onVideoPickCallback != null) &&
             showCameraButton)
           (controller, toolbarIconSize, iconTheme, dialogTheme) => CameraButton(
@@ -97,14 +97,16 @@ class FlutterQuillEmbeds {
                 iconTheme: iconTheme,
               ),
         if (showFormulaButton)
-          (controller, toolbarIconSize, iconTheme, dialogTheme) =>
-              FormulaButton(
-                icon: Icons.functions,
-                iconSize: toolbarIconSize,
-                tooltip: formulaButtonTooltip,
-                controller: controller,
-                iconTheme: iconTheme,
-                dialogTheme: dialogTheme,
-              )
+          (controller, toolbarIconSize, iconTheme, dialogTheme) {
+            // controller.document.insert(controller.document.length - 1, '\n');
+            return FormulaButton(
+              icon: Icons.functions,
+              iconSize: toolbarIconSize,
+              tooltip: formulaButtonTooltip,
+              controller: controller,
+              iconTheme: iconTheme,
+              dialogTheme: dialogTheme,
+            );
+          }
       ];
 }

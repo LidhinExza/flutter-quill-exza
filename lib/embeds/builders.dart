@@ -236,6 +236,7 @@ class FormulaEmbedBuilder extends EmbedBuilder {
   ) {
     assert(!kIsWeb, 'Please provide formula EmbedBuilder for Web');
     final mathController = MathFieldEditingController();
+
     return Focus(
       onFocusChange: (hasFocus) {
         debugPrint('HAS FOCUS $hasFocus');
@@ -259,7 +260,13 @@ class FormulaEmbedBuilder extends EmbedBuilder {
           ),
         )),
         onChanged: (value) {},
-        onSubmitted: (value) {},
+        onSubmitted: (value) {
+          final offset =
+              getEmbedNode(controller, controller.selection.start).offset;
+          controller.replaceText(offset, 1, BlockEmbed.formula(value),
+              TextSelection.collapsed(offset: offset));
+          debugPrint('DONE IN WAIL');
+        },
       ),
     );
   }

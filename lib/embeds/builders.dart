@@ -17,6 +17,8 @@ import 'widgets/image_resizer.dart';
 import 'widgets/video_app.dart';
 import 'widgets/youtube_video_app.dart';
 
+final mathController = MathFieldEditingController();
+
 class ImageEmbedBuilder extends EmbedBuilder {
   @override
   String get key => BlockEmbed.imageType;
@@ -236,50 +238,30 @@ class FormulaEmbedBuilder extends EmbedBuilder {
   ) {
     assert(!kIsWeb, 'Please provide formula EmbedBuilder for Web');
 
-    final mathController = MathFieldEditingController();
     return Focus(
       onFocusChange: (hasFocus) {
         if (hasFocus) {
-          // If the MathField is tapped, hides the built in keyboard
+          controller.skipRequestKeyboard;
           SystemChannels.textInput.invokeMethod('TextInput.hide');
-          debugPrint(mathController.currentEditingValue());
+        } else {
+          SystemChannels.textInput.invokeMethod('TextInput.show');
         }
       },
       child: MathField(
         controller: mathController,
         variables: const ['x', 'y', 'z'],
         decoration: InputDecoration(
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
+            suffix: MouseRegion(
+          cursor: MaterialStateMouseCursor.clickable,
+          child: GestureDetector(
+            onTap: () {},
+            child: const Icon(
+              Icons.highlight_remove_rounded,
+              color: Colors.grey,
             ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(
-                color: Colors.blue,
-              ),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(
-                color: Colors.blue,
-              ),
-            ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(
-                color: Colors.blue,
-              ),
-            ),
-            disabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(
-                color: Colors.blue,
-              ),
-            )),
-        onChanged: (value) {
-          debugPrint('TYPING VALUE IS');
-          debugPrint('TYPING VALUE IS Y $value');
-        },
+          ),
+        )),
+        onChanged: (value) {},
         onSubmitted: (value) {},
       ),
     );

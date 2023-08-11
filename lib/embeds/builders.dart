@@ -261,7 +261,10 @@ class FormulaEmbedBuilder extends EmbedBuilder {
           onSubmitted: (value) {
             final offset =
                 getEmbedNode(controller, controller.selection.start).offset;
-            controller.replaceText(offset, 1, BlockEmbed.formula(value),
+            controller.replaceText(
+                offset,
+                1,
+                BlockEmbed.formula('${TeXParser(value).parse()}'),
                 TextSelection.collapsed(offset: offset));
             debugPrint('DONE IN WAIL');
           },

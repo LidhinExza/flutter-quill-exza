@@ -246,27 +246,34 @@ class FormulaEmbedBuilder extends EmbedBuilder {
           SystemChannels.textInput.invokeMethod('TextInput.show');
         }
       },
-      child: MathField(
-        variables: const ['x', 'y', 'z'],
-        decoration: InputDecoration(
-            suffix: MouseRegion(
-          cursor: MaterialStateMouseCursor.clickable,
-          child: GestureDetector(
-            onTap: () {},
-            child: const Icon(
-              Icons.highlight_remove_rounded,
-              color: Colors.grey,
-            ),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 20, right: 20),
+        child: MathField(
+          variables: const ['x', 'y', 'z'],
+          decoration: InputDecoration(
+            border: _border(),
+            enabledBorder: _border(),
+            focusedBorder: _border(),
+            disabledBorder: _border(),
+            errorBorder: _border(),
           ),
-        )),
-        onChanged: (value) {},
-        onSubmitted: (value) {
-          final offset =
-              getEmbedNode(controller, controller.selection.start).offset;
-          controller.replaceText(offset, 1, BlockEmbed.formula(value),
-              TextSelection.collapsed(offset: offset));
-          debugPrint('DONE IN WAIL');
-        },
+          onChanged: (value) {},
+          onSubmitted: (value) {
+            final offset =
+                getEmbedNode(controller, controller.selection.start).offset;
+            controller.replaceText(offset, 1, BlockEmbed.formula(value),
+                TextSelection.collapsed(offset: offset));
+            debugPrint('DONE IN WAIL');
+          },
+        ),
+      ),
+    );
+  }
+
+  OutlineInputBorder _border() {
+    return const OutlineInputBorder(
+      borderSide: BorderSide(
+        color: Colors.grey,
       ),
     );
   }

@@ -321,8 +321,11 @@ class FormulaEmbedBuilder extends EmbedBuilder {
           padding: const EdgeInsets.only(left: 20, right: 20),
           child: Container(
             padding: const EdgeInsets.all(15),
-            decoration: BoxDecoration(
-              border: Border.all(),
+            decoration: const BoxDecoration(
+              border: Border(
+                  bottom: BorderSide(
+                color: Colors.grey,
+              )),
             ),
             constraints: const BoxConstraints(),
             child: SingleChildScrollView(
@@ -343,11 +346,12 @@ class FormulaEmbedBuilder extends EmbedBuilder {
     );
   }
 
-  UnderlineInputBorder _border() {
-    return const UnderlineInputBorder(
-        borderSide: BorderSide(
-      color: Colors.grey,
-    ));
+  OutlineInputBorder _border() {
+    return const OutlineInputBorder(
+      borderSide: BorderSide(
+        color: Colors.grey,
+      ),
+    );
   }
 }
 

@@ -309,9 +309,10 @@ class FormulaEmbedBuilder extends EmbedBuilder {
                     onChanged: (value) {
                       debugPrint(
                           'SELECTION NEW OLD ${mathcontroller.currentNode.courserPosition}');
-                      final offset =
-                          getEmbedNode(controller, controller.selection.start)
-                              .offset;
+
+                      final offset = getEmbedNode(
+                              controller, controller.selection.affinity.index)
+                          .offset;
                       debugPrint('SELECTION NEW $offset');
                       controller.replaceText(
                           offset,

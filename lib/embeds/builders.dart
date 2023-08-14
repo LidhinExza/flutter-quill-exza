@@ -304,12 +304,11 @@ class FormulaEmbedBuilder extends EmbedBuilder {
                         getEmbedNode(controller, controller.selection.start)
                             .offset;
                     controller.replaceText(
-                        offset,
-                        1,
-                        RewiseTexBlockEmbed.fromString(value),
-                        TextSelection.collapsed(offset: offset));
-                    debugPrint('DONE IN 0.6.0 $value');
-
+                      offset,
+                      1,
+                      RewiseTexBlockEmbed.fromString(value),
+                      TextSelection.collapsed(offset: offset),
+                    );
                     Navigator.pop(context);
                   },
                 ),

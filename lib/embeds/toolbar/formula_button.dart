@@ -11,6 +11,7 @@ class FormulaButton extends StatelessWidget {
     this.iconTheme,
     this.dialogTheme,
     this.tooltip,
+    this.focusNode,
     Key? key,
   }) : super(key: key);
 
@@ -23,7 +24,7 @@ class FormulaButton extends StatelessWidget {
   final QuillController controller;
 
   final QuillIconTheme? iconTheme;
-
+  final FocusNode? focusNode;
   final QuillDialogTheme? dialogTheme;
   final String? tooltip;
 
@@ -50,7 +51,7 @@ class FormulaButton extends StatelessWidget {
   Future<void> _onPressedHandler(BuildContext context) async {
     final index = controller.selection.baseOffset;
     final length = controller.selection.extentOffset - index;
-
+    controller.document.insert(index, '\n');
     controller.replaceText(
         index, length, RewiseTexBlockEmbed.fromString(''), null);
   }

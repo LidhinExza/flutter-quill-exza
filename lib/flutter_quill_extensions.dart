@@ -49,6 +49,7 @@ class FlutterQuillEmbeds {
     FilePickImpl? filePickImpl,
     WebImagePickImpl? webImagePickImpl,
     WebVideoPickImpl? webVideoPickImpl,
+    FocusNode? focusNode,
     RegExp? imageLinkRegExp,
     RegExp? videoLinkRegExp,
   }) =>

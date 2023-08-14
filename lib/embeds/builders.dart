@@ -235,8 +235,11 @@ class FormulaEmbedBuilder extends EmbedBuilder {
     TextStyle textStyle,
   ) {
     assert(!kIsWeb, 'Please provide formula EmbedBuilder for Web');
-    final mathController = MathFieldEditingController();
-
+    ;
+    final formulas = node.value.data;
+    final mathExpression = TeXParser(formulas).parse();
+    final texNode = convertMathExpressionToTeXNode(mathExpression);
+    final mathController = MathFieldEditingController()..currentNode = texNode;
     return Focus(
       onFocusChange: (hasFocus) {
         debugPrint('HAS FOCUS $hasFocus');
@@ -249,6 +252,7 @@ class FormulaEmbedBuilder extends EmbedBuilder {
       child: Padding(
         padding: const EdgeInsets.only(left: 20, right: 20),
         child: MathField(
+          controller: mathController,
           variables: const ['x', 'y', 'z'],
           decoration: InputDecoration(
             border: _border(),
@@ -261,10 +265,7 @@ class FormulaEmbedBuilder extends EmbedBuilder {
           onSubmitted: (value) {
             final offset =
                 getEmbedNode(controller, controller.selection.start).offset;
-            controller.replaceText(
-                offset,
-                1,
-                BlockEmbed.formula('${TeXParser(value).parse()}'),
+            controller.replaceText(offset, 1, BlockEmbed.formula(value),
                 TextSelection.collapsed(offset: offset));
             debugPrint('DONE IN WAIL');
           },

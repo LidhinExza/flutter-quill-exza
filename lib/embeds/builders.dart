@@ -250,7 +250,7 @@ class FormulaEmbedBuilder extends EmbedBuilder {
           greenRoot:
               TexParser(r'\frac a b', const TexParserSettings()).parse());
     }
-
+    debugPrint('ERROR IN FORMULA ${as.greenRoot.children.length}');
     return GestureDetector(
       onTap: () {
         final mathcontroller = MathFieldEditingController();
@@ -259,60 +259,81 @@ class FormulaEmbedBuilder extends EmbedBuilder {
           mathcontroller.updateValue(mathExpression);
         } catch (e) {}
         _focus.requestFocus();
-        showBottomSheet(
+        showModalBottomSheet(
           context: context,
           backgroundColor: Colors.white,
           constraints: BoxConstraints(
             minHeight: MediaQuery.sizeOf(context).height * 0.7,
           ),
-          builder: (context) => Padding(
-            padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: const Icon(Icons.close),
+          elevation: 3,
+          builder: (context) => Container(
+            height: MediaQuery.sizeOf(context).height * 0.7,
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10),
+                topRight: Radius.circular(10),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 10,
+                  spreadRadius: 2,
                 ),
-                MathField(
-                  focusNode: _focus,
-                  controller: mathcontroller,
-                  autofocus: true,
-                  variables: const ['x', 'y', 'z'],
-                  decoration: InputDecoration(
-                    border: _border(),
-                    enabledBorder: _border(),
-                    focusedBorder: _border(),
-                    disabledBorder: _border(),
-                    errorBorder: _border(),
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: const Icon(Icons.close),
                   ),
-                  onChanged: (value) {
-                    final offset =
-                        getEmbedNode(controller, controller.selection.start)
-                            .offset;
-                    controller.replaceText(
+                  MathField(
+                    focusNode: _focus,
+                    controller: mathcontroller,
+                    autofocus: true,
+                    variables: const ['x', 'y', 'z'],
+                    decoration: InputDecoration(
+                      border: _border(),
+                      enabledBorder: _border(),
+                      focusedBorder: _border(),
+                      disabledBorder: _border(),
+                      errorBorder: _border(),
+                    ),
+                    onChanged: (value) {
+                      debugPrint(
+                          'SELECTION NEW OLD ${mathcontroller.currentNode.courserPosition}');
+                      final offset =
+                          getEmbedNode(controller, controller.selection.start)
+                              .offset;
+                      debugPrint('SELECTION NEW $offset');
+                      controller.replaceText(
+                          offset,
+                          1,
+                          RewiseTexBlockEmbed.fromString(value),
+                          TextSelection.collapsed(offset: offset));
+                    },
+                    onSubmitted: (value) {
+                      final offset =
+                          getEmbedNode(controller, controller.selection.start)
+                              .offset;
+                      controller.replaceText(
                         offset,
                         1,
                         RewiseTexBlockEmbed.fromString(value),
-                        TextSelection.collapsed(offset: offset));
-                  },
-                  onSubmitted: (value) {
-                    final offset =
-                        getEmbedNode(controller, controller.selection.start)
-                            .offset;
-                    controller.replaceText(
-                      offset,
-                      1,
-                      RewiseTexBlockEmbed.fromString(value),
-                      TextSelection.collapsed(offset: offset),
-                    );
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
+                        TextSelection.collapsed(offset: offset),
+                      );
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -330,14 +351,16 @@ class FormulaEmbedBuilder extends EmbedBuilder {
             constraints: const BoxConstraints(),
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: Math(
-                ast: as,
-                mathStyle: MathStyle.text,
-                textStyle: const TextStyle(
-                  fontSize: 20,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
+              child: as.root.children.isEmpty
+                  ? const Text('Tap to update formula')
+                  : Math(
+                      ast: as,
+                      mathStyle: MathStyle.text,
+                      textStyle: const TextStyle(
+                        fontSize: 20,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
             ),
           )
 

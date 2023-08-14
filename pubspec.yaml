@@ -1,6 +1,6 @@
 name: flutter_quill_extensions
 description: Embed extensions for flutter_quill including image, video, formula and etc.
-version: 0.5.6
+version: 0.5.7
 homepage: https://bulletjournal.us/home/index.html
 repository: https://github.com/LidhinExza/flutter-quill-exza.git
 
@@ -21,6 +21,7 @@ dependencies:
   string_validator: ^1.0.0
   universal_html: ^2.2.1
   url_launcher: ^6.1.9
+  flutter_math_fork: ^0.7.1
 
 
 dev_dependencies:

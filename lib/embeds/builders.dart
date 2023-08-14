@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_math_fork/ast.dart';
+import 'package:flutter_math_fork/flutter_math.dart';
+import 'package:flutter_math_fork/tex.dart';
 import 'package:flutter_quill/extensions.dart' as base;
 import 'package:flutter_quill/flutter_quill.dart' hide Text;
 import 'package:flutter_quill/translations.dart';
@@ -237,40 +239,86 @@ class FormulaEmbedBuilder extends EmbedBuilder {
     assert(!kIsWeb, 'Please provide formula EmbedBuilder for Web');
     ;
     final formulas = node.value.data;
-    final mathExpression = TeXParser(formulas).parse();
-    final texNode = convertMathExpressionToTeXNode(mathExpression);
-    final mathController = MathFieldEditingController()..currentNode = texNode;
-    return Focus(
-      onFocusChange: (hasFocus) {
-        debugPrint('HAS FOCUS $hasFocus');
-        if (hasFocus) {
-          SystemChannels.textInput.invokeMethod('TextInput.hide');
-        } else {
-          SystemChannels.textInput.invokeMethod('TextInput.show');
+    SyntaxTree as;
+    try {
+      as = SyntaxTree(
+          greenRoot: TexParser(formulas, const TexParserSettings()).parse());
+    } catch (e) {
+      debugPrint('ERROR IN FORMULA $e');
+      as = SyntaxTree(
+          greenRoot:
+              TexParser(r'\frac a b', const TexParserSettings()).parse());
+    }
+
+    return GestureDetector(
+      onTap: () {
+        final mathcontroller = MathFieldEditingController();
+        final texNode;
+        debugPrint('ALL EXP $formulas');
+        try {
+          final mathExpression = TeXParser(formulas).parse();
+          texNode = convertMathExpressionToTeXNode(mathExpression);
+          mathcontroller.updateValue(mathExpression);
+          debugPrint('ALL EXP No fail $texNode');
+        } catch (e) {
+          debugPrint('ALL EXP fail $e');
         }
+        showBottomSheet(
+          context: context,
+          backgroundColor: Colors.white,
+          constraints: BoxConstraints(
+            minHeight: MediaQuery.sizeOf(context).height * 0.7,
+          ),
+          builder: (context) => Padding(
+            padding: const EdgeInsets.only(top: 25, left: 5, right: 5),
+            child: MathField(
+              controller: mathcontroller,
+              autofocus: true,
+              variables: const ['x', 'y', 'z'],
+              decoration: InputDecoration(
+                border: _border(),
+                enabledBorder: _border(),
+                focusedBorder: _border(),
+                disabledBorder: _border(),
+                errorBorder: _border(),
+                hintText: formulas,
+                hintStyle: const TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+              onChanged: (value) {},
+              onSubmitted: (value) {
+                final offset =
+                    getEmbedNode(controller, controller.selection.start).offset;
+                controller.replaceText(offset, 1, BlockEmbed.formula(value),
+                    TextSelection.collapsed(offset: offset));
+                debugPrint('DONE IN WAIL $value');
+
+                Navigator.pop(context);
+              },
+            ),
+          ),
+        );
       },
       child: Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20),
-        child: MathField(
-          //  controller: mathController,
-          variables: const ['x', 'y', 'z'],
-          decoration: InputDecoration(
-            border: _border(),
-            enabledBorder: _border(),
-            focusedBorder: _border(),
-            disabledBorder: _border(),
-            errorBorder: _border(),
+          padding: const EdgeInsets.only(left: 20, right: 20),
+          child: Container(
+            padding: const EdgeInsets.all(15),
+            width: as.root.width.toDouble(),
+            decoration: BoxDecoration(
+              border: Border.all(),
+            ),
+            child: Math(
+              ast: as,
+              mathStyle: MathStyle.text,
+              textStyle: const TextStyle(
+                fontSize: 20,
+              ),
+            ),
+          )
+
+          /*  ,*/
           ),
-          onChanged: (value) {},
-          onSubmitted: (value) {
-            final offset =
-                getEmbedNode(controller, controller.selection.start).offset;
-            controller.replaceText(offset, 1, BlockEmbed.formula(value),
-                TextSelection.collapsed(offset: offset));
-            debugPrint('DONE IN WAIL $value');
-          },
-        ),
-      ),
     );
   }
 

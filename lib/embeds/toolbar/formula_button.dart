@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
+import '../custom_embed.dart';
 
 class FormulaButton extends StatelessWidget {
   const FormulaButton({
@@ -50,6 +51,7 @@ class FormulaButton extends StatelessWidget {
     final index = controller.selection.baseOffset;
     final length = controller.selection.extentOffset - index;
 
-    controller.replaceText(index, length, BlockEmbed.formula(''), null);
+    controller.replaceText(
+        index, length, RewiseTexBlockEmbed.fromString(''), null);
   }
 }

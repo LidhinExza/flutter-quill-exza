@@ -12,6 +12,7 @@ import 'package:universal_html/html.dart' as html;
 
 import '../shims/dart_ui_fake.dart'
     if (dart.library.html) '../shims/dart_ui_real.dart' as ui;
+import 'custom_embed.dart';
 import 'utils.dart';
 import 'widgets/image.dart';
 import 'widgets/image_resizer.dart';
@@ -224,7 +225,7 @@ class VideoEmbedBuilder extends EmbedBuilder {
 
 class FormulaEmbedBuilder extends EmbedBuilder {
   @override
-  String get key => BlockEmbed.formulaType;
+  String get key => RewiseTexBlockEmbed.rewiseTexEmbedType;
 
   @override
   Widget build(
@@ -292,14 +293,20 @@ class FormulaEmbedBuilder extends EmbedBuilder {
                     final offset =
                         getEmbedNode(controller, controller.selection.start)
                             .offset;
-                    controller.replaceText(offset, 1, BlockEmbed.formula(value),
+                    controller.replaceText(
+                        offset,
+                        1,
+                        RewiseTexBlockEmbed.fromString(value),
                         TextSelection.collapsed(offset: offset));
                   },
                   onSubmitted: (value) {
                     final offset =
                         getEmbedNode(controller, controller.selection.start)
                             .offset;
-                    controller.replaceText(offset, 1, BlockEmbed.formula(value),
+                    controller.replaceText(
+                        offset,
+                        1,
+                        RewiseTexBlockEmbed.fromString(value),
                         TextSelection.collapsed(offset: offset));
                     debugPrint('DONE IN 0.6.0 $value');
 

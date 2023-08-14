@@ -236,10 +236,10 @@ class FormulaEmbedBuilder extends EmbedBuilder {
   ) {
     assert(!kIsWeb, 'Please provide formula EmbedBuilder for Web');
     ;
-    // final formulas = node.value.data;
-    // final mathExpression = TeXParser(formulas).parse();
-    // final texNode = convertMathExpressionToTeXNode(mathExpression);
-    // final mathController = MathFieldEditingController()..currentNode = texNode;
+    final formulas = node.value.data;
+    final mathExpression = TeXParser(formulas).parse();
+    final texNode = convertMathExpressionToTeXNode(mathExpression);
+    final mathController = MathFieldEditingController()..currentNode = texNode;
     return Focus(
       onFocusChange: (hasFocus) {
         debugPrint('HAS FOCUS $hasFocus');

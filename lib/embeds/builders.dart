@@ -301,7 +301,7 @@ class FormulaEmbedBuilder extends EmbedBuilder {
                             .offset;
                     controller.replaceText(offset, 1, BlockEmbed.formula(value),
                         TextSelection.collapsed(offset: offset));
-                    debugPrint('DONE IN WAIL $value');
+                    debugPrint('DONE IN 0.6.0 $value');
 
                     Navigator.pop(context);
                   },

@@ -343,12 +343,11 @@ class FormulaEmbedBuilder extends EmbedBuilder {
     );
   }
 
-  OutlineInputBorder _border() {
-    return const OutlineInputBorder(
-      borderSide: BorderSide(
-        color: Colors.grey,
-      ),
-    );
+  UnderlineInputBorder _border() {
+    return const UnderlineInputBorder(
+        borderSide: BorderSide(
+      color: Colors.grey,
+    ));
   }
 }
 

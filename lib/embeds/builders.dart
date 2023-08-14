@@ -291,16 +291,19 @@ class FormulaEmbedBuilder extends EmbedBuilder {
                 children: [
                   IconButton(
                     onPressed: () {
-                      final offset = getEmbedNode(
-                              controller, controller.selection.affinity.index)
-                          .offset;
-                      debugPrint('SELECTION NEW $offset');
+                      debugPrint('ALL THE VALUE $values');
+                      if (values != '') {
+                        final offset = getEmbedNode(
+                                controller, controller.selection.affinity.index)
+                            .offset;
+                        debugPrint('SELECTION NEW $offset');
 
-                      controller.replaceText(
-                          offset,
-                          1,
-                          RewiseTexBlockEmbed.fromString(values),
-                          TextSelection.collapsed(offset: offset));
+                        controller.replaceText(
+                            offset,
+                            1,
+                            RewiseTexBlockEmbed.fromString(values),
+                            TextSelection.collapsed(offset: offset));
+                      }
                       Navigator.pop(context);
                     },
                     icon: const Icon(Icons.close),
@@ -341,15 +344,17 @@ class FormulaEmbedBuilder extends EmbedBuilder {
             ),
           ),
         ).whenComplete(() {
-          final offset =
-              getEmbedNode(controller, controller.selection.affinity.index)
-                  .offset;
-          debugPrint('SELECTION NEW $offset');
-          controller.replaceText(
-              offset,
-              1,
-              RewiseTexBlockEmbed.fromString(values),
-              TextSelection.collapsed(offset: offset));
+          if (values != '') {
+            final offset =
+                getEmbedNode(controller, controller.selection.affinity.index)
+                    .offset;
+            debugPrint('SELECTION NEW $offset');
+            controller.replaceText(
+                offset,
+                1,
+                RewiseTexBlockEmbed.fromString(values),
+                TextSelection.collapsed(offset: offset));
+          }
         });
       },
       child: Padding(

@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:flutter_math_fork/tex.dart';
 import 'package:flutter_quill/extensions.dart' as base;
 import 'package:flutter_quill/flutter_quill.dart' hide Text;
@@ -250,75 +249,113 @@ class FormulaEmbedBuilder extends EmbedBuilder {
           greenRoot:
               TexParser(r'\frac a b', const TexParserSettings()).parse());
     }
-
+    final mathcontroller = MathFieldEditingController();
+    try {
+      final mathExpression = TeXParser(formulas).parse();
+      mathcontroller.updateValue(mathExpression);
+    } catch (e) {}
     return GestureDetector(
       onTap: () {
-        final mathcontroller = MathFieldEditingController();
-        try {
-          final mathExpression = TeXParser(formulas).parse();
-          mathcontroller.updateValue(mathExpression);
-        } catch (e) {}
-        _focus.requestFocus();
-        showBottomSheet(
-          context: context,
-          backgroundColor: Colors.white,
-          constraints: BoxConstraints(
-            minHeight: MediaQuery.sizeOf(context).height * 0.7,
-          ),
-          builder: (context) => Padding(
-            padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: const Icon(Icons.close),
-                ),
-                MathField(
-                  focusNode: _focus,
-                  controller: mathcontroller,
-                  autofocus: true,
-                  variables: const ['x', 'y', 'z'],
-                  decoration: InputDecoration(
-                    border: _border(),
-                    enabledBorder: _border(),
-                    focusedBorder: _border(),
-                    disabledBorder: _border(),
-                    errorBorder: _border(),
-                  ),
-                  onChanged: (value) {
-                    final offset =
-                        getEmbedNode(controller, controller.selection.start)
-                            .offset;
-                    controller.replaceText(
-                        offset,
-                        1,
-                        RewiseTexBlockEmbed.fromString(value),
-                        TextSelection.collapsed(offset: offset));
-                  },
-                  onSubmitted: (value) {
-                    final offset =
-                        getEmbedNode(controller, controller.selection.start)
-                            .offset;
-                    controller.replaceText(
-                        offset,
-                        1,
-                        RewiseTexBlockEmbed.fromString(value),
-                        TextSelection.collapsed(offset: offset));
-                    debugPrint('DONE IN 0.6.0 $value');
+        // final mathcontroller = MathFieldEditingController();
+        // try {
+        //   final mathExpression = TeXParser(formulas).parse();
+        //   mathcontroller.updateValue(mathExpression);
+        // } catch (e) {}
+        // _focus.requestFocus();
+        // showBottomSheet(
+        //   context: context,
+        //   backgroundColor: Colors.white,
+        //   constraints: BoxConstraints(
+        //     minHeight: MediaQuery.sizeOf(context).height * 0.7,
+        //   ),
+        //   builder: (context) => Padding(
+        //     padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
+        //     child: Column(
+        //       mainAxisSize: MainAxisSize.min,
+        //       crossAxisAlignment: CrossAxisAlignment.end,
+        //       children: [
+        //         IconButton(
+        //           onPressed: () {
+        //             Navigator.pop(context);
+        //           },
+        //           icon: const Icon(Icons.close),
+        //         ),
+        //         MathField(
+        //           focusNode: _focus,
+        //           controller: mathcontroller,
+        //           autofocus: true,
+        //           variables: const ['x', 'y', 'z'],
+        //           decoration: InputDecoration(
+        //             border: _border(),
+        //             enabledBorder: _border(),
+        //             focusedBorder: _border(),
+        //             disabledBorder: _border(),
+        //             errorBorder: _border(),
+        //           ),
+        //           onChanged: (value) {
+        //             final offset =
+        //                 getEmbedNode(controller, controller.selection.start)
+        //                     .offset;
+        //             controller.replaceText(
+        //                 offset,
+        //                 1,
+        //                 RewiseTexBlockEmbed.fromString(value),
+        //                 TextSelection.collapsed(offset: offset));
+        //           },
+        //           onSubmitted: (value) {
+        //             final offset =
+        //                 getEmbedNode(controller, controller.selection.start)
+        //                     .offset;
+        //             controller.replaceText(
+        //                 offset,
+        //                 1,
+        //                 RewiseTexBlockEmbed.fromString(value),
+        //                 TextSelection.collapsed(offset: offset));
+        //             debugPrint('DONE IN 0.6.0 $value');
 
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
-            ),
-          ),
-        );
+        //             Navigator.pop(context);
+        //           },
+        //         ),
+        //       ],
+        //     ),
+        //   ),
+        // );
       },
-      child: Padding(
+      child: //
+          MathField(
+        focusNode: _focus,
+        controller: mathcontroller,
+        autofocus: true,
+        variables: const ['x', 'y', 'z'],
+        decoration: InputDecoration(
+          border: _border(),
+          enabledBorder: _border(),
+          focusedBorder: _border(),
+          disabledBorder: _border(),
+          errorBorder: _border(),
+        ),
+        onChanged: (value) {
+          final offset =
+              getEmbedNode(controller, controller.selection.start).offset;
+          controller.replaceText(
+              offset,
+              1,
+              RewiseTexBlockEmbed.fromString(value),
+              TextSelection.collapsed(offset: offset));
+        },
+        onSubmitted: (value) {
+          final offset =
+              getEmbedNode(controller, controller.selection.start).offset;
+          controller.replaceText(
+              offset,
+              1,
+              RewiseTexBlockEmbed.fromString(value),
+              TextSelection.collapsed(offset: offset));
+          debugPrint('DONE IN 0.6.0 $value');
+        },
+      ),
+
+      /*  Padding(
           padding: const EdgeInsets.only(left: 20, right: 20),
           child: Container(
             padding: const EdgeInsets.all(15),
@@ -340,7 +377,7 @@ class FormulaEmbedBuilder extends EmbedBuilder {
           )
 
           /*  ,*/
-          ),
+          ),*/
     );
   }
 

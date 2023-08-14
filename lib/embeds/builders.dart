@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_math_fork/ast.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:flutter_math_fork/tex.dart';
 import 'package:flutter_quill/extensions.dart' as base;
@@ -239,6 +238,7 @@ class FormulaEmbedBuilder extends EmbedBuilder {
     assert(!kIsWeb, 'Please provide formula EmbedBuilder for Web');
     ;
     final formulas = node.value.data;
+    final _focus = FocusNode();
     SyntaxTree as;
     try {
       as = SyntaxTree(
@@ -253,16 +253,11 @@ class FormulaEmbedBuilder extends EmbedBuilder {
     return GestureDetector(
       onTap: () {
         final mathcontroller = MathFieldEditingController();
-        final texNode;
-        debugPrint('ALL EXP $formulas');
         try {
           final mathExpression = TeXParser(formulas).parse();
-          texNode = convertMathExpressionToTeXNode(mathExpression);
           mathcontroller.updateValue(mathExpression);
-          debugPrint('ALL EXP No fail $texNode');
-        } catch (e) {
-          debugPrint('ALL EXP fail $e');
-        }
+        } catch (e) {}
+        _focus.requestFocus();
         showBottomSheet(
           context: context,
           backgroundColor: Colors.white,
@@ -270,32 +265,48 @@ class FormulaEmbedBuilder extends EmbedBuilder {
             minHeight: MediaQuery.sizeOf(context).height * 0.7,
           ),
           builder: (context) => Padding(
-            padding: const EdgeInsets.only(top: 25, left: 5, right: 5),
-            child: MathField(
-              controller: mathcontroller,
-              autofocus: true,
-              variables: const ['x', 'y', 'z'],
-              decoration: InputDecoration(
-                border: _border(),
-                enabledBorder: _border(),
-                focusedBorder: _border(),
-                disabledBorder: _border(),
-                errorBorder: _border(),
-                hintText: formulas,
-                hintStyle: const TextStyle(
-                  color: Colors.white,
+            padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: const Icon(Icons.close),
                 ),
-              ),
-              onChanged: (value) {},
-              onSubmitted: (value) {
-                final offset =
-                    getEmbedNode(controller, controller.selection.start).offset;
-                controller.replaceText(offset, 1, BlockEmbed.formula(value),
-                    TextSelection.collapsed(offset: offset));
-                debugPrint('DONE IN WAIL $value');
+                MathField(
+                  focusNode: _focus,
+                  controller: mathcontroller,
+                  autofocus: true,
+                  variables: const ['x', 'y', 'z'],
+                  decoration: InputDecoration(
+                    border: _border(),
+                    enabledBorder: _border(),
+                    focusedBorder: _border(),
+                    disabledBorder: _border(),
+                    errorBorder: _border(),
+                  ),
+                  onChanged: (value) {
+                    final offset =
+                        getEmbedNode(controller, controller.selection.start)
+                            .offset;
+                    controller.replaceText(offset, 1, BlockEmbed.formula(value),
+                        TextSelection.collapsed(offset: offset));
+                  },
+                  onSubmitted: (value) {
+                    final offset =
+                        getEmbedNode(controller, controller.selection.start)
+                            .offset;
+                    controller.replaceText(offset, 1, BlockEmbed.formula(value),
+                        TextSelection.collapsed(offset: offset));
+                    debugPrint('DONE IN WAIL $value');
 
-                Navigator.pop(context);
-              },
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
             ),
           ),
         );
@@ -304,15 +315,19 @@ class FormulaEmbedBuilder extends EmbedBuilder {
           padding: const EdgeInsets.only(left: 20, right: 20),
           child: Container(
             padding: const EdgeInsets.all(15),
-            width: as.root.width.toDouble(),
             decoration: BoxDecoration(
               border: Border.all(),
             ),
-            child: Math(
-              ast: as,
-              mathStyle: MathStyle.text,
-              textStyle: const TextStyle(
-                fontSize: 20,
+            constraints: const BoxConstraints(),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Math(
+                ast: as,
+                mathStyle: MathStyle.text,
+                textStyle: const TextStyle(
+                  fontSize: 20,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ),
           )

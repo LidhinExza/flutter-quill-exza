@@ -240,6 +240,7 @@ class FormulaEmbedBuilder extends EmbedBuilder {
     ;
     final formulas = node.value.data;
     final _focus = FocusNode();
+    var values = '';
     SyntaxTree as;
     try {
       as = SyntaxTree(
@@ -259,7 +260,7 @@ class FormulaEmbedBuilder extends EmbedBuilder {
           mathcontroller.updateValue(mathExpression);
         } catch (e) {}
         _focus.requestFocus();
-        showBottomSheet(
+        showModalBottomSheet(
           context: context,
           backgroundColor: Colors.white,
           constraints: BoxConstraints(
@@ -290,6 +291,16 @@ class FormulaEmbedBuilder extends EmbedBuilder {
                 children: [
                   IconButton(
                     onPressed: () {
+                      final offset = getEmbedNode(
+                              controller, controller.selection.affinity.index)
+                          .offset;
+                      debugPrint('SELECTION NEW $offset');
+
+                      controller.replaceText(
+                          offset,
+                          1,
+                          RewiseTexBlockEmbed.fromString(values),
+                          TextSelection.collapsed(offset: offset));
                       Navigator.pop(context);
                     },
                     icon: const Icon(Icons.close),
@@ -309,18 +320,10 @@ class FormulaEmbedBuilder extends EmbedBuilder {
                     onChanged: (value) {
                       debugPrint(
                           'SELECTION NEW OLD ${mathcontroller.currentNode.courserPosition}');
-
-                      final offset = getEmbedNode(
-                              controller, controller.selection.affinity.index)
-                          .offset;
-                      debugPrint('SELECTION NEW $offset');
-                      controller.replaceText(
-                          offset,
-                          1,
-                          RewiseTexBlockEmbed.fromString(value),
-                          TextSelection.collapsed(offset: offset));
+                      values = value;
                     },
                     onSubmitted: (value) {
+                      values = value;
                       final offset =
                           getEmbedNode(controller, controller.selection.start)
                               .offset;
@@ -337,7 +340,17 @@ class FormulaEmbedBuilder extends EmbedBuilder {
               ),
             ),
           ),
-        );
+        ).whenComplete(() {
+          final offset =
+              getEmbedNode(controller, controller.selection.affinity.index)
+                  .offset;
+          debugPrint('SELECTION NEW $offset');
+          controller.replaceText(
+              offset,
+              1,
+              RewiseTexBlockEmbed.fromString(values),
+              TextSelection.collapsed(offset: offset));
+        });
       },
       child: Padding(
           padding: const EdgeInsets.only(left: 20, right: 20),

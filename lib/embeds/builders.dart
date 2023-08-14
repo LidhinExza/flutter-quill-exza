@@ -259,7 +259,7 @@ class FormulaEmbedBuilder extends EmbedBuilder {
           mathcontroller.updateValue(mathExpression);
         } catch (e) {}
         _focus.requestFocus();
-        showModalBottomSheet(
+        showBottomSheet(
           context: context,
           backgroundColor: Colors.white,
           constraints: BoxConstraints(

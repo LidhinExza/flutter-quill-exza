@@ -21,7 +21,7 @@ import 'widgets/youtube_video_app.dart';
 
 class ImageEmbedBuilder extends EmbedBuilder {
   @override
-  String get key => BlockEmbed.imageType;
+  String get key => RewiseResourceBlockEmbed.rewiseResourceEmbedType;
 
   @override
   bool get expanded => false;

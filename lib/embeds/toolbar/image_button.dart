@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
+import '../custom_embed.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../embed_types.dart';
@@ -104,7 +105,8 @@ class ImageButton extends StatelessWidget {
       final index = controller.selection.baseOffset;
       final length = controller.selection.extentOffset - index;
 
-      controller.replaceText(index, length, BlockEmbed.image(value), null);
+      controller.replaceText(
+          index, length, RewiseTexBlockEmbed.fromString(value), null);
     }
   }
 }

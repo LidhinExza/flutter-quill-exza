@@ -45,7 +45,7 @@ class FormulaButton extends StatelessWidget {
       size: iconSize * 1.77,
       fillColor: iconFillColor,
       borderRadius: iconTheme?.borderRadius ?? 2,
-      onPressed: () => _returnPopup(context),
+      onPressed: () => _onPressedHandler(context),
     );
   }
 
@@ -90,106 +90,6 @@ class FormulaButton extends StatelessWidget {
     );
   }
 
-  Future _returnPopup(BuildContext context) {
-    final mathcontroller = MathFieldEditingController();
-    final _focus = FocusNode();
-    var values = '';
-    return showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.white,
-      constraints: BoxConstraints(
-        minHeight: MediaQuery.sizeOf(context).height * 0.7,
-      ),
-      elevation: 3,
-      builder: (context) => Container(
-        height: MediaQuery.sizeOf(context).height * 0.7,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(10),
-            topRight: Radius.circular(10),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black26,
-              blurRadius: 10,
-              spreadRadius: 2,
-            ),
-          ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              IconButton(
-                onPressed: () {
-                  debugPrint('ALL THE VALUE $values');
-                  if (values != '') {
-                    final offset = getEmbedNode(
-                            controller, controller.selection.affinity.index)
-                        .offset;
-                    debugPrint('SELECTION NEW $offset');
-
-                    controller.replaceText(
-                        offset,
-                        1,
-                        RewiseTexBlockEmbed.fromString(values),
-                        TextSelection.collapsed(offset: offset));
-                  }
-                  Navigator.pop(context);
-                },
-                icon: const Icon(Icons.close),
-              ),
-              MathField(
-                focusNode: _focus,
-                controller: mathcontroller,
-                autofocus: true,
-                variables: const ['x', 'y', 'z'],
-                decoration: InputDecoration(
-                  border: _border(),
-                  enabledBorder: _border(),
-                  focusedBorder: _border(),
-                  disabledBorder: _border(),
-                  errorBorder: _border(),
-                ),
-                onChanged: (value) {
-                  values = value;
-                },
-                onSubmitted: (value) {
-                  values = value;
-                  try {
-                    final offset =
-                        getEmbedNode(controller, controller.selection.start)
-                            .offset;
-                    debugPrint('OFFSET VALUES $offset');
-                    controller.replaceText(
-                      offset,
-                      1,
-                      RewiseTexBlockEmbed.fromString(value),
-                      TextSelection.collapsed(offset: offset),
-                    );
-                  } catch (e) {
-                    controller.document.insert(
-                      0,
-                      RewiseTexBlockEmbed.fromString(value),
-                    );
-                    controller.updateSelection(
-                        const TextSelection.collapsed(offset: 0),
-                        ChangeSource.LOCAL);
-                  }
-
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   OutlineInputBorder _border() {
     return const OutlineInputBorder(
       borderSide: BorderSide(
@@ -208,6 +108,5 @@ class FormulaButton extends StatelessWidget {
       RewiseTexBlockEmbed.fromString(''),
       null,
     );
-    final offset = getEmbedNode(controller, controller.selection.start).offset;
   }
 }

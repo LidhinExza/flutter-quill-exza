@@ -7,6 +7,7 @@ import 'package:flutter_quill/flutter_quill.dart' hide Text;
 import 'package:flutter_quill/translations.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../custom_embed.dart';
 import '../embed_types.dart';
 
 class LinkDialog extends StatefulWidget {
@@ -149,7 +150,8 @@ class ImageVideoUtils {
     }
 
     if (imageUrl != null) {
-      controller.replaceText(index, length, BlockEmbed.image(imageUrl), null);
+      controller.replaceText(index, length,
+          RewiseResourceBlockEmbed.fromJsonString(imageUrl), null);
     }
   }
 

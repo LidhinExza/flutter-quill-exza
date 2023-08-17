@@ -246,19 +246,28 @@ class FormulaEmbedBuilder extends EmbedBuilder {
       as = SyntaxTree(
           greenRoot: TexParser(formulas, const TexParserSettings()).parse());
     } catch (e) {
-      debugPrint('ERROR IN FORMULA $e');
       as = SyntaxTree(
           greenRoot:
               TexParser(r'\frac a b', const TexParserSettings()).parse());
     }
-    debugPrint('ERROR IN FORMULA ${as.greenRoot.children.length}');
+
     return GestureDetector(
       onTap: () {
         final mathcontroller = MathFieldEditingController();
         try {
+          debugPrint('CURRENT FORMULA $formulas');
+
           final mathExpression = TeXParser(formulas).parse();
+
           mathcontroller.updateValue(mathExpression);
-        } catch (e) {}
+        } catch (e) {
+          if (e is ParseException) {
+            print('Parser Exception: ${e.message}');
+            // Handle the exception or show an error message to the user
+          } else {
+            debugPrint('ERROR IN FORMULA $e');
+          }
+        }
         _focus.requestFocus();
         showModalBottomSheet(
           context: context,
@@ -292,18 +301,19 @@ class FormulaEmbedBuilder extends EmbedBuilder {
                   IconButton(
                     onPressed: () {
                       debugPrint('ALL THE VALUE $values');
-                      if (values != '') {
-                        final offset = getEmbedNode(
-                                controller, controller.selection.affinity.index)
-                            .offset;
-                        debugPrint('SELECTION NEW $offset');
 
-                        controller.replaceText(
-                            offset,
-                            1,
-                            RewiseTexBlockEmbed.fromString(values),
-                            TextSelection.collapsed(offset: offset));
-                      }
+                      final offset = getEmbedNode(
+                              controller, controller.selection.affinity.index)
+                          .offset;
+                      debugPrint('SELECTION NEW $offset');
+
+                      controller.replaceText(
+                        offset,
+                        1,
+                        RewiseTexBlockEmbed.fromString(values),
+                        TextSelection.collapsed(offset: offset),
+                      );
+
                       Navigator.pop(context);
                     },
                     icon: const Icon(Icons.close),
@@ -317,29 +327,34 @@ class FormulaEmbedBuilder extends EmbedBuilder {
                       'b',
                       'd',
                       'g',
-                      'h_2',
                       'x',
                       'y',
                       'z',
-                      '=',
-                      '\\int',
-                      '\\infty',
-                      '\\alpha',
-                      '\\beta',
-                      '\\gamma',
-                      '\\delta',
-                      '\\theta'
                     ],
                     decoration: InputDecoration(
+                      hintText: 'Enter the formula',
+                      hintStyle: const TextStyle(
+                        color: Colors.grey,
+                      ),
+                      helperMaxLines: 10,
                       border: _border(),
                       enabledBorder: _border(),
                       focusedBorder: _border(),
                       disabledBorder: _border(),
                       errorBorder: _border(),
+                      suffix: MouseRegion(
+                        cursor: MaterialStateMouseCursor.clickable,
+                        child: GestureDetector(
+                          onTap: mathcontroller.clear,
+                          child: const Icon(
+                            Icons.highlight_remove_rounded,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
                     ),
                     onChanged: (value) {
-                      debugPrint(
-                          'SELECTION NEW OLD ${mathcontroller.currentNode.courserPosition}');
+                      debugPrint('SELECTION NEW OLD $value');
                       values = value;
                     },
                     onSubmitted: (value) {
@@ -378,20 +393,19 @@ class FormulaEmbedBuilder extends EmbedBuilder {
           padding: const EdgeInsets.only(left: 20, right: 20),
           child: Container(
             padding: const EdgeInsets.all(15),
-            decoration: const BoxDecoration(
-              border: Border(
-                  bottom: BorderSide(
+            decoration: BoxDecoration(
+              border: Border.all(
                 color: Colors.grey,
-              )),
+              ),
+              borderRadius: BorderRadius.circular(10),
             ),
             constraints: const BoxConstraints(),
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: as.root.children.isEmpty
-                  ? const Text('Tap to update formula')
+                  ? const Text('Tap to insert formula')
                   : Math(
                       ast: as,
-                      mathStyle: MathStyle.text,
                       textStyle: const TextStyle(
                         fontSize: 20,
                         overflow: TextOverflow.ellipsis,
